@@ -31,20 +31,23 @@ db.Message = require("./message.model.js")(sequelize, Sequelize);
 db.Organisation = require("./organisation.model.js")(sequelize, Sequelize);
 db.Todo = require("./todo.model.js")(sequelize, Sequelize);
 db.Role = require("./role.model.js")(sequelize, Sequelize);
+db.UserOrga = require("./userOrga.model.js")(sequelize, Sequelize);
+db.ChannelRole = sequelize.define("channel_role");
+db.UserRole = sequelize.define("user_role");
 
 
+db.User.belongsToMany(db.Organisation, { through: UserOrga });
+db.Organisation.belongsToMany(db.User, { through: UserOrga });
 
+db.User.belongsToMany(db.Role, { through: db.UserRole });
+db.Role.belongsToMany(db.User, { through: db.UserRole });
 
-db.User.belongsToMany(db.Organisation, { through: 'user_orga' });
-db.Organisation.belongsToMany(db.User, { through: 'user_orga' });
-
-db.User.belongsToMany(db.Role, { through: 'user_role' });
-db.Role.belongsToMany(db.User, { through: 'user_role' });
+db.Channel.belongsToMany(db.Role, { through: db.ChannelRole });
+db.Role.belongsToMany(db.Channel, { through: db.ChannelRole });
 
 db.Role.belongsTo(db.Organisation);
 
-
-db.Channel.hasMany(db.Message);
+db.Channel.hasMany(db.Message, {foreignKey: {name: 'idChannel'}});
 db.Channel.belongsTo(db.Organisation);
 
 db.Organisation.hasMany(db.Channel);
@@ -61,6 +64,8 @@ db.Message.belongsTo(db.Channel, {foreignKey: {name: 'idChannel'}});
 
 db.Todo.belongsTo(db.User);
 db.Todo.belongsTo(db.Event);
+
+db.Event.belongsTo(db.User);
 
 
 module.exports = db;

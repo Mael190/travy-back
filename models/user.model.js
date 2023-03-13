@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: false
       },
-      firstname: {
+      lastname: {
         type: Sequelize.STRING,
         allowNull: false
       },
