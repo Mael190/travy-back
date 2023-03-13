@@ -53,6 +53,11 @@ async function initial() {
         content: 'Un message privé',
         idSender: 'edce462c-4286-45b0-9435-85776657de83',
         idRecipient: 'edce462c-4286-45b0-9435-85776657de83'
+      }),
+      db.Message.create({
+        content: 'Un 2e message privé',
+        idSender: 'edce462c-4286-45b0-9435-85776657de83',
+        idRecipient: 'edce462c-4286-45b0-9435-85776657de83'
       })
     ]);
     await user.addOrganisation(organisation, { through: { permission: 'admin' }});

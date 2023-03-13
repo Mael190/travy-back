@@ -7,12 +7,12 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true
       },
       content: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: false
       },
       image: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
       is_seen: {
         type: Sequelize.BOOLEAN,
