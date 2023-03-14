@@ -10,7 +10,8 @@ exports.signIn = async (req, res) => {
   const user = await User.findOne({
     where: {
       email: req.body.email
-    }
+    },
+    include: db.Organisation
   });
   if(!user) return credentialIncorrect(res);
 
@@ -20,7 +21,9 @@ exports.signIn = async (req, res) => {
   );
   if(!passwordIsValid) return credentialIncorrect(res);
 
-  const token = jwt.sign({userId: user.id, roles: []}, config.secret);
+  const token = jwt.sign(
+    {userId: user.id, organisations: user.organisations.map(orga => orga.id)}
+    , config.secret);
 
   return res.status(200).send({accessToken: token});
 
