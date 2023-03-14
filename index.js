@@ -1,11 +1,15 @@
 const express = require("express");
 const cors = require("cors");
 const db = require("./models");
+const authJwt = require("./middlewares/authJwt");
+const roleManagement = require("./middlewares/roleManagement");
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(authJwt.verifyToken);
+app.use(roleManagement.verifyOrganisation);
 
 app.listen(4041, () => {
   console.log(`Server is running on port 4041`);
@@ -33,6 +37,7 @@ async function initial() {
         description: 'Une école d\'informatique'
       }),
       db.Role.create({
+        id: '9d795618-7a6d-4897-9706-665500ba5717',
         name: 'CEO',
         organisationId: '94d0356e-0562-4987-8837-ad9719617802'
       }),
@@ -46,24 +51,28 @@ async function initial() {
       db.Message.create({
         content: 'Premier message ici',
         is_seen: false,
-        idSender: 'edce462c-4286-45b0-9435-85776657de83',
-        idChannel: 'fd543a82-556b-4e68-9b42-7755ad417138'
+        senderId: 'edce462c-4286-45b0-9435-85776657de83',
+        channelId: 'fd543a82-556b-4e68-9b42-7755ad417138',
+        organisationId: '94d0356e-0562-4987-8837-ad9719617802'
       }),
       db.Message.create({
         content: 'Un message privé',
-        idSender: 'edce462c-4286-45b0-9435-85776657de83',
-        idRecipient: 'edce462c-4286-45b0-9435-85776657de83'
+        senderId: 'edce462c-4286-45b0-9435-85776657de83',
+        recipientId: 'edce462c-4286-45b0-9435-85776657de83',
+        organisationId: '94d0356e-0562-4987-8837-ad9719617802'
       }),
       db.Message.create({
         content: 'Un 2e message privé',
-        idSender: 'edce462c-4286-45b0-9435-85776657de83',
-        idRecipient: 'edce462c-4286-45b0-9435-85776657de83'
+        senderId: 'edce462c-4286-45b0-9435-85776657de83',
+        recipientId: 'edce462c-4286-45b0-9435-85776657de83',
+        organisationId: '94d0356e-0562-4987-8837-ad9719617802'
       })
     ]);
     await user.addOrganisation(organisation, { through: { permission: 'admin' }});
     await user.addRole(role);
     await channel.addRole(role);
-  }
+}
 
 require('./routes/auth.route.js')(app);
 require('./routes/messages.route.js')(app);
+require('./routes/channels.route.js')(app);

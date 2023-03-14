@@ -47,20 +47,22 @@ db.Role.belongsToMany(db.Channel, { through: db.ChannelRole });
 
 db.Role.belongsTo(db.Organisation);
 
-db.Channel.hasMany(db.Message, {foreignKey: {name: 'idChannel'}});
+db.Channel.hasMany(db.Message, {foreignKey: {name: 'channelId'}});
 db.Channel.belongsTo(db.Organisation);
 
 db.Organisation.hasMany(db.Channel);
 db.Organisation.hasMany(db.Role);
+db.Organisation.hasMany(db.Message);
 
-db.User.hasMany(db.Message, {foreignKey: {name: 'idSender'}});
-db.User.hasMany(db.Message, {foreignKey: {name: 'idRecipient'}});
+db.User.hasMany(db.Message, {foreignKey: {name: 'senderId'}});
+db.User.hasMany(db.Message, {foreignKey: {name: 'recipientId'}});
 db.User.hasMany(db.Event);
 db.User.hasMany(db.Todo);
 
-db.Message.belongsTo(db.User, {foreignKey: {name: 'idSender'}});
-db.Message.belongsTo(db.User, {foreignKey: {name: 'idRecipient'}});
-db.Message.belongsTo(db.Channel, {foreignKey: {name: 'idChannel'}});
+db.Message.belongsTo(db.User, {foreignKey: {name: 'senderId'}});
+db.Message.belongsTo(db.User, {foreignKey: {name: 'recipientId'}});
+db.Message.belongsTo(db.Channel, {foreignKey: {name: 'channelId'}});
+db.Message.belongsTo(db.Organisation, {foreignKey: {name: 'organisationId'}});
 
 db.Todo.belongsTo(db.User);
 db.Todo.belongsTo(db.Event);
