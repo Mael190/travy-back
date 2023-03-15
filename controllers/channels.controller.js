@@ -54,6 +54,7 @@ exports.delete = async (req, res) => {
 }
 
 exports.findAll = async (req, res) => {
+    console.log('req.params :>> ', req.params);
     const channels = await db.Channel.findAll({
         where: {
             organisationId: req.params.organisationId

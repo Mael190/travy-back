@@ -1,5 +1,4 @@
 const controller = require("../controllers/channels.controller");
-const authJwt = require("../middlewares/authJwt");
 
 module.exports = function(app) {
     app.get("/:organisationId/channels", controller.findAll);

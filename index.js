@@ -8,9 +8,8 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(authJwt.verifyToken);
-app.use(roleManagement.verifyOrganisation);
-
+app.param('auth', authJwt.verifyToken);
+app.param('role', roleManagement.verifyOrganisation);
 app.listen(4041, () => {
   console.log(`Server is running on port 4041`);
 });
