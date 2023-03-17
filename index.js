@@ -8,8 +8,8 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.param('auth', authJwt.verifyToken);
-app.param('role', roleManagement.verifyOrganisation);
+app.use(authJwt.verifyToken);
+app.param('organisationId', roleManagement.verifyOrganisation);
 app.listen(4041, () => {
   console.log(`Server is running on port 4041`);
 });
@@ -65,6 +65,14 @@ async function initial() {
         senderId: 'edce462c-4286-45b0-9435-85776657de83',
         recipientId: 'edce462c-4286-45b0-9435-85776657de83',
         organisationId: '94d0356e-0562-4987-8837-ad9719617802'
+      }),
+      db.Event.create({
+        title: 'RDV test',
+        description: 'ça test ici',
+        startDate: '2023-03-17 15:00:00',
+        endDate: '2023-03-17 16:00:00',
+        userId: 'edce462c-4286-45b0-9435-85776657de83',
+        organisationId: '94d0356e-0562-4987-8837-ad9719617802'
       })
     ]);
     await user.addOrganisation(organisation, { through: { permission: 'admin' }});
@@ -75,3 +83,4 @@ async function initial() {
 require('./routes/auth.route.js')(app);
 require('./routes/messages.route.js')(app);
 require('./routes/channels.route.js')(app);
+require('./routes/events.route.js')(app);
