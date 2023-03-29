@@ -11,7 +11,7 @@ exports.create = async (req, res) => {
         res.status(201).send();
     }
     catch {
-        res.satus(500).send();
+        res.status(500).send();
     }
 }
 

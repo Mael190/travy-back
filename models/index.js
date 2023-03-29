@@ -34,7 +34,8 @@ db.Role = require("./role.model.js")(sequelize, Sequelize);
 db.UserOrga = require("./userOrga.model.js")(sequelize, Sequelize);
 db.ChannelRole = sequelize.define("channel_role");
 db.UserRole = sequelize.define("user_role");
-
+db.UserEvent = sequelize.define("user_event");
+//todo: remove timestamps table many to many
 
 db.User.belongsToMany(db.Organisation, { through: UserOrga });
 db.Organisation.belongsToMany(db.User, { through: UserOrga });
@@ -44,6 +45,9 @@ db.Role.belongsToMany(db.User, { through: db.UserRole });
 
 db.Channel.belongsToMany(db.Role, { through: db.ChannelRole });
 db.Role.belongsToMany(db.Channel, { through: db.ChannelRole });
+
+db.Event.belongsToMany(db.User, { through: db.UserEvent });
+db.User.belongsToMany(db.Event, { through: db.UserEvent });
 
 db.Role.belongsTo(db.Organisation);
 
@@ -56,7 +60,7 @@ db.Organisation.hasMany(db.Message);
 
 db.User.hasMany(db.Message, {foreignKey: {name: 'senderId'}});
 db.User.hasMany(db.Message, {foreignKey: {name: 'recipientId'}});
-db.User.hasMany(db.Event);
+db.User.hasMany(db.Event, {foreignKey: 'creatorId'});
 db.User.hasMany(db.Todo);
 
 db.Message.belongsTo(db.User, {foreignKey: {name: 'senderId'}});
@@ -67,7 +71,8 @@ db.Message.belongsTo(db.Organisation, {foreignKey: {name: 'organisationId'}});
 db.Todo.belongsTo(db.User);
 db.Todo.belongsTo(db.Event);
 
-db.Event.belongsTo(db.User);
+db.Event.belongsTo(db.User, {foreignKey: 'creatorId'});
+db.Event.belongsTo(db.Organisation);
 
 
 module.exports = db;
