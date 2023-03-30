@@ -37,3 +37,55 @@ exports.findAll = async (req, res) => {
     }, []);
     res.send(usersGrouped);
 };
+
+exports.addUserRole = async (req, res) => {
+    try {
+        const [role, user] = await Promise.all([
+            db.Role.findByPk(req.params.roleId),
+            db.User.findByPk(req.params.userId, {
+                include: {
+                    model: db.Organisation,
+                    where: {id: req.params.organisationId}
+            }})
+        ]);
+
+        if(!role || !user) {
+            return res.status(404).send();
+        }
+        if(role.organisationId !== req.params.organisationId || user.organisations.lenght < 0) {
+            return res.status(403).send();
+        }
+        user.addRole(role);
+
+        res.status(200).send();
+    }
+    catch {
+        res.status(500).send();
+    }
+}
+
+exports.removeUserRole = async (req, res) => {
+    try {
+        const [role, user] = await Promise.all([
+            db.Role.findByPk(req.params.roleId),
+            db.User.findByPk(req.params.userId, {
+                include: {
+                    model: db.Organisation,
+                    where: {id: req.params.organisationId}
+            }})
+        ]);
+
+        if(!role || !user) {
+            return res.status(404).send();
+        }
+        if(role.organisationId !== req.params.organisationId || user.organisations.lenght < 0) {
+            return res.status(403).send();
+        }
+        user.removeRole(role);
+
+        res.status(200).send();
+    }
+    catch {
+        res.status(500).send();
+    }
+}
