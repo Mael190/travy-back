@@ -1,37 +1,28 @@
 const db = require("../models");
-const { QueryTypes } = require('sequelize');
+const { QueryTypes, Op } = require('sequelize');
 
-const messageFormated = (message) =>  {
-    return {
-        id: message.id,
-        content: message.content,
-        image: message.image,
-        isSeen: message.is_seen,
-        senderId: message.senderId,
-        createdAt: message.createdAt,
-        updatedAt: message.updatedAt
-}};
-
-const sqlFindAll = `
+const SQL_AllMessages = `
     SELECT m.* 
     FROM user_roles ur
     JOIN channel_roles cr on cr.roleId = ur.roleId
     JOIN channels c on c.id = cr.channelId
     JOIN messages m on m.channelId = c.id
     WHERE ur.userId = $1 AND c.organisationId = $2
+    AND m.createdAt BETWEEN $3 AND $4
 
-UNION 
+    UNION 
+    
     SELECT m.*
     FROM messages m
-    JOIN users u1
     WHERE m.channelId IS NULL
     AND m.organisationId = '94d0356e-0562-4987-8837-ad9719617802'
     AND (m.senderId = $1 OR m.recipientId = $1)
+    AND m.createdAt BETWEEN $3 AND $4
 `;
 
 exports.findAll = async (req, res) => {
-    const messages = await db.sequelize.query(sqlFindAll, {
-        bind: [req.userId, req.params.organisationId],
+    const messages = await db.sequelize.query(SQL_AllMessages, {
+        bind: [req.userId, req.params.organisationId, req.query.startDate, req.query.endDate],
         type: QueryTypes.SELECT
     });
 
@@ -54,3 +45,33 @@ exports.findAll = async (req, res) => {
     
     return res.send(messagesMapped); 
 };
+
+exports.findChannelMessages = async (req, res) => {
+    const channelMessages = await db.Message.findAll({
+        where: {
+            channelId: req.params.channelId,
+            organisationId: req.params.organisationId
+        }
+    });
+    return res.send(channelMessages);
+}
+
+exports.findUserMessages = async (req, res) => {
+    const channelMessages = await db.Message.findAll({
+        where: {
+            organisationId: req.params.organisationId,
+            [Op.or]: [
+                { 
+                    senderId: req.userId,
+                    senderId: req.params.interlocutorId
+                    
+                },
+                { 
+                    recipientId: req.params.interlocutorId,
+                    recipientId: req.userId
+                }
+            ]
+        }
+    });
+    return res.send(channelMessages);
+}
