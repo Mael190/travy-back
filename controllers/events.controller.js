@@ -38,7 +38,6 @@ exports.update = async (req, res) => {
         return updated > 0 ? res.status(200).send() :res.status(404).send();
     }
     catch (error){
-        console.log('error :>> ', error);
         res.status(500).send();
     }
 }

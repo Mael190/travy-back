@@ -9,8 +9,6 @@ module.exports = function(app) {
 
     app.put("/:organisationId/channels/:channelId", controller.update);
 
-    app.get("/:organisationId/:channelId/messages", controller.findChannelMessages);
-
     app.post("/:organisationId/channels/:channelId/roles/:roleId", controller.addChannelRole);
 
     app.delete("/:organisationId/channels/:channelId/roles/:roleId", controller.removeChannelRole);

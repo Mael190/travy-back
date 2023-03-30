@@ -30,7 +30,6 @@ exports.update = async (req, res) => {
             }
         }
         );
-        console.log('n :>> ', n);
         res.status(200).send();
     }
     catch {
@@ -54,7 +53,6 @@ exports.delete = async (req, res) => {
 }
 
 exports.findAll = async (req, res) => {
-    console.log('req.params :>> ', req.params);
     const channels = await db.Channel.findAll({
         where: {
             organisationId: req.params.organisationId
@@ -62,16 +60,6 @@ exports.findAll = async (req, res) => {
     });
     return res.send(channels);
 };
-
-exports.findChannelMessages = async (req, res) => {
-    const channelMessages = await db.Message.findAll({
-        where: {
-            channelId: req.params.channelId,
-            organisationId: req.params.organisationId
-        }
-    });
-    return res.send(channelMessages);
-}
 
 exports.addChannelRole = async (req, res) => {
     try {
