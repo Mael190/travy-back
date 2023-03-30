@@ -21,7 +21,7 @@ db.sequelize.sync({force: true}).then(async () => {
 
 async function initial() {
 
-    const [user,user2, organisation, role, channel, event] = await Promise.all([
+    const [user,user2, organisation, role, channel, event, role2] = await Promise.all([
       db.User.create({
         id: 'edce462c-4286-45b0-9435-85776657de83',
         firstname: 'Enzo',
@@ -45,7 +45,7 @@ async function initial() {
       }),
       db.Role.create({
         id: '9d795618-7a6d-4897-9706-665500ba5717',
-        name: 'CEO',
+        name: 'Comex',
         organisationId: '94d0356e-0562-4987-8837-ad9719617802'
       }),
       db.Channel.create({
@@ -62,6 +62,11 @@ async function initial() {
         startDate: '2023-03-17 15:00:00',
         endDate: '2023-03-17 16:00:00',
         creatorId: 'edce462c-4286-45b0-9435-85776657de83',
+        organisationId: '94d0356e-0562-4987-8837-ad9719617802'
+      }),
+      db.Role.create({
+        id: '9d795618-7a6d-4897-9706-665500ba5718',
+        name: 'RH',
         organisationId: '94d0356e-0562-4987-8837-ad9719617802'
       }),
       db.Message.create({
@@ -82,13 +87,14 @@ async function initial() {
         senderId: 'edce462c-4286-45b0-9435-85776657de83',
         recipientId: 'edce462c-4286-45b0-9435-85776657de83',
         organisationId: '94d0356e-0562-4987-8837-ad9719617802'
-      }),
+      })
     ]);
     await user.addOrganisation(organisation, { through: { permission: 'admin' }});
     await user2.addOrganisation(organisation, { through: { permission: 'admin' }});
     await user2.addRole(role);
     await event.addUser(user2);
     await user.addRole(role);
+    await user.addRole(role2);
     await channel.addRole(role);
 }
 
@@ -96,3 +102,4 @@ require('./routes/auth.route.js')(app);
 require('./routes/messages.route.js')(app);
 require('./routes/channels.route.js')(app);
 require('./routes/events.route.js')(app);
+require('./routes/users.route.js')(app);
