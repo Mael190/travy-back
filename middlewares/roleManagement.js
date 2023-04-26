@@ -1,5 +1,5 @@
 exports.verifyOrganisation = (req, res, next) => {
-    if(req.path === '/api/auth/signin') {
+    if(req.path === '/auth/signin' || req.path === '/socket.io/') {
         return next();
     }
     if(!req.organisations.includes(req.params.organisationId)) {

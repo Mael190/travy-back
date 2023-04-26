@@ -3,7 +3,7 @@ const config = require("../config/auth.config.js");
 const db = require("../models");
 
 exports.verifyToken = (req, res, next) => {
-  if(req.path === '/api/auth/signin') {
+  if(req.path === '/auth/signin' || req.path === '/socket.io/') {
     return next();
   }
   const token = req.headers?.authorization?.split(' ')[1];
