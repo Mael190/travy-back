@@ -28,14 +28,29 @@ exports.findAll = async (req, res) => {
 
     const messagesMapped = messages.reduce((acc, message) => {
         const type = message.channelId ? 'channels' : 'privates';
-        const index = acc[type].findIndex(channel => channel.id === (message.channelId ?? message.senderId));
+
+        let id;
+        if(message.channelId) {
+            id= message.channelId
+        }
+        else if (message.senderId === req.userId && message.recipientId === req.userId) {
+            id= req.userId;
+        }
+        else if (message.senderId === req.userId && message.recipientId !== req.userId) {
+            id=  message.recipientId;
+        }
+        else if (message.senderId !== req.userId && message.recipientId === req.userId) {
+            id= message.senderId;
+        }
+
+        const index = acc[type].findIndex(channel => channel.id === id);
             
         if(index !== -1) {
             acc[type][index].messages.push(message);
         }
         else {
             acc[type].push({
-                id: message.channelId ?? message.senderId,
+                id: id,
                 messages: [message]
             });
         }

@@ -2,7 +2,8 @@ const db = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const SQL_UsersFromOrganisation = `
-SELECT u.id, uo.permission, u.firstname, u.lastname, u.email, u.password, u.avatar, u.color, r.id as "roleId", r.name as "roleName" FROM user_orgas uo 
+SELECT u.id, uo.permission, u.firstname, u.lastname, u.email, u.job, u.avatar, u.color, r.id as "roleId", r.name as "roleName", uo.phoneNumber, uo.startTime, uo.endTime
+FROM user_orgas uo 
 LEFT JOIN users u ON u.id = uo.userId
 LEFT JOIN user_roles ur on ur.userId = u.id 
 LEFT JOIN roles r on r.id = ur.roleId 

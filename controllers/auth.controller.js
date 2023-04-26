@@ -21,10 +21,14 @@ exports.signIn = async (req, res) => {
   );
   if(!passwordIsValid) return credentialIncorrect(res);
 
+  const organisationsId = user.organisations.map(orga => orga.id)
+
   const token = jwt.sign(
-    {userId: user.id, organisations: user.organisations.map(orga => orga.id)}
+    {userId: user.id, organisations: organisationsId}
     , config.secret);
 
-  return res.status(200).send({accessToken: token});
+  delete user.password;
+  delete user.organisations;
+  return res.status(200).send({accessToken: token, user: user, organisations: organisationsId});
 
 }
