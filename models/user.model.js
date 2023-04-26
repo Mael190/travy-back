@@ -30,6 +30,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: true
       },
+      job: {
+        type: Sequelize.STRING,
+        allowNull: false
+      }
     });
   
     return User;
